@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Face Enrollment | Attendance System</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- face-api.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<style data-purpose="custom-animations">
+    @keyframes pulse-border {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.02); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .status-pulse {
+      animation: pulse-border 2s infinite ease-in-out;
+    }
+    .video-container {
+      width: 320px;
+      height: 320px;
+      position: relative;
+    }
+    #video-element {
+      transform: scaleX(-1);
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    #overlay-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: scaleX(-1);
+      border-radius: 50%;
+    }
+  </style>
+<style data-purpose="layout-styles">
+    .progress-segment {
+      height: 8px;
+      flex: 1;
+      background-color: #e5e7eb;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+    .progress-segment.active {
+      background-color: #22c55e;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+<!-- BEGIN: EnrollmentCard -->
+<main class="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100" data-purpose="enrollment-container">
+<!-- Header Section -->
+<header class="p-6 text-center border-b border-gray-50">
+<h1 class="text-2xl font-bold text-gray-800">Face Enrollment</h1>
+<p class="text-gray-500 text-sm mt-1">Register your biometric data for attendance</p>
+</header><div class="hidden mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm flex flex-col items-center gap-2" id="error-container">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<p class="text-center font-medium" id="error-message"></p>
+<button class="underline font-bold" onclick="window.location.reload()">Try Again</button>
+</div>
+<!-- Camera/Visual Feedback Section -->
+<section class="p-8 flex flex-col items-center">
+<!-- Video Preview Circle -->
+<div class="video-container rounded-full border-[6px] border-gray-300 flex items-center justify-center bg-gray-100 overflow-hidden relative" data-purpose="video-preview-wrapper" id="status-ring">
+<video autoplay="" class="hidden" height="320" id="video-element" muted="" playsinline="" width="320"></video>
+<canvas height="320" id="overlay-canvas" width="320"></canvas>
+<!-- Placeholder Icon before start -->
+<div class="flex flex-col items-center text-gray-400" id="camera-placeholder">
+<svg class="h-16 w-16 mb-2" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-xs font-medium uppercase tracking-wider">Camera Ready</span>
+</div>
+</div>
+<!-- Instruction Area -->
+<div class="mt-8 text-center min-h-[80px]">
+<h2 class="text-xl font-semibold text-gray-800" id="main-instruction">Ready to Start?</h2>
+<p class="text-gray-500 text-sm mt-2" id="sub-instruction">Position your face in the center of the circle</p>
+</div>
+<!-- Progress Tracking -->
+<div class="w-full mt-6">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Progress</span>
+<span class="text-sm font-bold text-green-600" id="progress-counter">0 / 12</span>
+</div>
+<div class="flex gap-1.5" id="progress-bar-container">
+<!-- 12 segments generated dynamically or static -->
+<div class="progress-segment"></div>
+<div class="progress-segment"></div>
+<div class="progress-segment"></div>
+<div class="progress-segment"></div>
+<div class="progress-segment"></div>
+<div class="progress-segment"></div>
+<div class="progress-segment"></div>
+<div class="progress-segment"></div>
+<div class="progress-segment"></div>
+<div class="progress-segment"></div>
+<div class="progress-segment"></div>
+<div class="progress-segment"></div>
+</div>
+</div>
+<!-- Control Button -->
+<button class="mt-10 w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all shadow-lg active:transform active:scale-95 flex justify-center items-center gap-2" id="start-btn">
+<span>Start Enrollment</span>
+<svg class="h-5 w-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" fill-rule="evenodd"></path>
+</svg>
+</button>
+</section>
+<!-- Success Modal (Hidden by default) -->
+<div class="hidden fixed inset-0 bg-white/95 z-50 flex flex-col items-center justify-center p-6 text-center" id="success-message">
+<div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6">
+<svg class="h-12 w-12" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+</svg>
+</div>
+<h2 class="text-3xl font-bold text-gray-900">Enrollment Complete!</h2>
+<p class="text-gray-600 mt-4 max-w-xs">Your face profile has been successfully saved. Redirecting to dashboard...</p>
+</div>
+</main>
+<!-- END: EnrollmentCard -->
+<script data-purpose="face-api-logic">
+    const video = document.getElementById('video-element');
+    const canvas = document.getElementById('overlay-canvas');
+    const startBtn = document.getElementById('start-btn');
+    const statusRing = document.getElementById('status-ring');
+    const mainText = document.getElementById('main-instruction');
+    const subText = document.getElementById('sub-instruction');
+    const progressCounter = document.getElementById('progress-counter');
+    const segments = document.querySelectorAll('.progress-segment');
+    const successModal = document.getElementById('success-message');
+    const placeholder = document.getElementById('camera-placeholder');
+    const errorContainer = document.getElementById('error-container');
+    const errorMessage = document.getElementById('error-message');
+
+    let currentPoseIndex = 0;
+    let enrolledDescriptors = [];
+    let isDetecting = false;
+    let stream = null;
+    let lastCaptureTime = 0;
+
+    const POSES = [
+      { label: "Look Straight", sub: "Keep a neutral expression", check: () => true, count: 2 },
+      { label: "Turn Left", sub: "Slightly turn head left", check: () => true, count: 2 },
+      { label: "Turn Right", sub: "Slightly turn head right", check: () => true, count: 2 },
+      { label: "Look Up", sub: "Slightly tilt head up", check: () => true, count: 2 },
+      { label: "Look Down", sub: "Slightly tilt head down", check: () => true, count: 2 },
+      { label: "Smile", sub: "Give a natural smile", check: () => true, count: 2 }
+    ];
+
+    const poseSequence = [];
+    POSES.forEach(p => { for(let i=0; i < p.count; i++) poseSequence.push(p); });
+
+    async function init() {
+      console.log("Initializing Face Enrollment...");
+      startBtn.disabled = true;
+      startBtn.textContent = "Loading Models...";
+      
+      try {
+        const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model';
+        console.log("Loading models from: ", MODEL_URL);
+        await Promise.all([
+          faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+          faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+          faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+        ]);
+        console.log("Models loaded successfully.");
+        startBtn.textContent = "Start Enrollment";
+        startBtn.disabled = false;
+      } catch (err) {
+        console.error("Model Loading Error: ", err);
+        showError("Failed to load facial recognition models. Please check your internet connection.");
+      }
+    }
+
+    function showError(msg) {
+      errorMessage.innerText = msg;
+      errorContainer.classList.remove('hidden');
+      startBtn.classList.add('hidden');
+    }
+
+    async function startCamera() {
+      console.log("Requesting camera access...");
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 320, facingMode: 'user' } });
+        video.srcObject = stream;
+        video.onloadedmetadata = () => {
+           video.play();
+           video.classList.remove('hidden');
+           placeholder.classList.add('hidden');
+           startBtn.classList.add('hidden');
+           isDetecting = true;
+           detect();
+        };
+        console.log("Camera stream started.");
+      } catch (err) {
+        console.error("Camera Error: ", err);
+        showError("Camera access denied or unavailable. Please enable permissions and refresh.");
+      }
+    }
+
+    async function detect() {
+      if (!isDetecting) return;
+      const detection = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor();
+      if (detection) {
+        const landmarks = detection.landmarks;
+        const currentTarget = poseSequence[currentPoseIndex];
+        updateUIStatus('valid');
+        mainText.innerText = currentTarget.label;
+        subText.innerText = currentTarget.sub;
+        
+        // Auto-capture every 800ms to allow user time to switch angles smoothly
+        const now = Date.now();
+        if (currentTarget.check(landmarks) && now - lastCaptureTime > 800) {
+            lastCaptureTime = now;
+            capturePose(detection.descriptor);
+        }
+      } else {
+        updateUIStatus('invalid');
+        mainText.innerText = "Face Not Detected";
+        subText.innerText = "Adjust lighting and stay in the circle";
+      }
+      requestAnimationFrame(detect);
+    }
+
+    function capturePose(descriptor) {
+      enrolledDescriptors.push(Array.from(descriptor));
+      segments[currentPoseIndex].classList.add('active');
+      currentPoseIndex++;
+      progressCounter.innerText = `${currentPoseIndex} / 12`;
+      if (currentPoseIndex >= 12) finishEnrollment();
+    }
+
+    function updateUIStatus(status) { statusRing.style.borderColor = (status === 'valid' ? '#22c55e' : '#ef4444'); }
+
+    async function finishEnrollment() {
+      isDetecting = false;
+      if (stream) stream.getTracks().forEach(track => track.stop());
+      
+      const student = JSON.parse(localStorage.getItem('currentStudent'));
+      if(!student) {
+        showError("Student not logged in. Please login first.");
+        return;
+      }
+      
+      try {
+        startBtn.textContent = "Saving...";
+        startBtn.disabled = true;
+        
+        const response = await fetch('/api/face/enroll', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ studentId: student.id, descriptors: enrolledDescriptors })
+        });
+        
+        const data = await response.json();
+        if(data.success) {
+            localStorage.setItem("faceEnrolled", "true");
+            successModal.classList.remove('hidden');
+            setTimeout(() => { window.location.href = "mark.html"; }, 2000);
+        } else {
+            showError(data.message || "Failed to save face data");
+        }
+      } catch (err) {
+        showError("Server error. Please ensure backend is running.");
+      }
+      console.log("Enrollment Complete.");
+    }
+
+    // Helpers: isFacingStraight, isLookingUp, etc. (kept same for logic consistency)
+    function isFacingStraight(l){const n=l.getNose()[6],le=l.getLeftEye()[0],re=l.getRightEye()[3],m=(le.x+re.x)/2; return Math.abs(n.x-m)<15;}
+    function isLookingUp(l){return (l.getJawOutline()[8].y - l.getNose()[0].y) > 100;}
+    function isLookingDown(l){return (l.getJawOutline()[8].y - l.getNose()[0].y) < 60;}
+    function isTurningLeft(l){return Math.abs(l.getNose()[6].x - l.getRightEye()[3].x) < 20;}
+    function isTurningRight(l){return Math.abs(l.getNose()[6].x - l.getLeftEye()[0].x) < 20;}
+    function isTiltingLeft(l){return (l.getRightEye()[3].y - l.getLeftEye()[0].y) > 15;}
+    function isTiltingRight(l){return (l.getLeftEye()[0].y - l.getRightEye()[3].y) > 15;}
+    function isSmiling(l){const m=l.getMouth(); return Math.abs(m[6].x - m[0].x) > 75;}
+    function isBlinking(l){return Math.abs(l.getLeftEye()[1].y - l.getLeftEye()[5].y) < 3;}
+
+    startBtn.addEventListener('click', startCamera);
+    window.onload = init;
+  </script>
+</body></html><!-- MISSING_IMAGES:
+- No external images required, using standard SVG icons and placeholders.
+-->

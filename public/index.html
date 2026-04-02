@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Face Attendance - Auth</title>
+<script>
+tailwind.config = { darkMode: "class" }
+</script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Public Sans', sans-serif;
+        }
+        .auth-card {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .light *, body * {
+         background-color: white !important;
+         color: #111 !important;
+        }
+        button {
+          background: linear-gradient(to right, #2563eb, #4f46e5) !important;
+          color: white !important;
+
+        }
+    </style>
+</head>
+<body class="bg-white min-h-screen flex flex-col font-display">
+<!-- Top Navigation Bar -->
+<header class="w-full bg-white dark:bg-[#2d1e16] px-6 py-4">
+<div class="W-full flex items-center justify-between">
+<div class="flex items-center gap-3 text-primary">
+<div style="display:flex; align-items:left; gap:12px; margin-left:40px; margin-bottom:8px;">
+    <img src="logo.png" style="height:70px;">
+
+    <div>
+        <div style="font-size:28px; font-weight:800;">
+            Ethiraj College for Women
+        </div>
+
+        <p class="text-gray-500 dark:text-gray-400 font-medium">Bsc Mathemtics with Computer Applications</p>
+    </div>
+
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="h-8 w-[1px] bg-gray-200 dark:bg-gray-700 mx-2"></div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow flex items-center justify-center p-4 py-12">
+<div class="w-full max-w-[420px]">
+<!-- Branding Header -->
+<div class="text-center mb-8">
+<h2 class="text-3xl font-black text-gray-900 dark:text-white mb-2">Student Face Attendance</h2>
+<p class="text-gray-500 dark:text-gray-400 font-medium">Login or Create Account</p>
+</div>
+<!-- Auth Card -->
+<div class="auth-card bg-white dark:bg-[#2d1e16] rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
+<!-- Tab Toggle -->
+<div class="flex border-b border-gray-100 dark:border-gray-800">
+<button class="flex-1 py-4 text-sm font-bold transition-all border-b-2 border-primary text-primary" id="loginTab">
+                        Login
+                    </button>
+<button class="flex-1 py-4 text-sm font-bold transition-all border-b-2 border-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" id="signupTab">
+                        Sign Up
+                    </button>
+</div>
+<div class="p-8">
+<!-- Login Form (Visible by default) -->
+<form class="space-y-5" id="loginForm">
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">Register Number</label>
+<div class="relative">
+<input id="regInput" class="w-full pl-11 pr-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-gray-900 focus:outline-none transition-all" placeholder="e.g. 2024CS001" type="text"/></div>
+</div>
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">mail</span>
+<input id="emailInput" class="w-full pl-11 pr-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-gray-900 focus:outline-none transition-all" placeholder="student@university.edu" type="email"/></div>
+</div>
+<button type="submit" class="w-full text-white font-bold py-3.5 rounded-lg mt-4 bg-blue-600 hover:bg-blue-700">
+Login to Dashboard
+</button>
+</form>
+<!-- Sign Up Form (Hidden) -->
+<form class="hidden space-y-4" id="signupForm">
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">Student Name</label>
+<input id="signupName" class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#38261d] text-gray-900 dark:text-white focus:outline-none transition-all" minlength="3" placeholder="e.g. John Doe" required="true" type="text"/>
+<p class="text-xs text-red-500 font-medium hidden">Name must be at least 3 characters.</p>
+</div>
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">Register Number</label>
+<input id="signupReg" class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#38261d] text-gray-900 dark:text-white focus:outline-none transition-all" placeholder="No spaces allowed" type="text"/>
+<p class="text-xs text-red-500 font-medium hidden">Register number cannot contain spaces.</p>
+</div>
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">Email</label>
+<input id="signupEmail" class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#38261d] text-gray-900 dark:text-white focus:outline-none transition-all" placeholder="university@email.com" type="email"/>
+<p class="text-xs text-red-500 font-medium hidden">Please enter a valid email address.</p>
+</div>
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">Year of Study</label>
+<div class="relative">
+<select id="signupYear" class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#38261d] text-gray-900 dark:text-white appearance-none focus:outline-none transition-all" required="true">
+<option disabled="" selected="" value="">Select Year</option>
+<option value="first_year">Year 1</option>
+<option value="second_year">Year 2</option>
+<option value="third_year">Year 3</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">expand_more</span>
+</div>
+</div>
+<button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-lg mt-4">
+Create Account
+</button>
+</form>
+</div>
+</div>
+<!-- Footer Meta -->
+<div class="mt-8 text-center space-y-4">
+<p class="text-xs text-gray-400 uppercase tracking-widest font-bold">Secure Biometric Verification</p>
+</div>
+</div>
+</main>
+<!-- Footer Information -->
+<footer class="mt-auto py-8 px-6 border-t border-gray-200 dark:border-gray-800 text-center">
+<p class="text-sm text-gray-500 dark:text-gray-400">
+            © by Priya.
+        </p>
+</footer>
+<!-- Logic Simulation (Simplified for UI view) -->
+<script>
+        const loginTab = document.getElementById('loginTab');
+        const signupTab = document.getElementById('signupTab');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('border-primary', 'text-primary');
+            loginTab.classList.remove('border-transparent', 'text-gray-400');
+            signupTab.classList.remove('border-primary', 'text-primary');
+            signupTab.classList.add('border-transparent', 'text-gray-400');
+            loginForm.classList.remove('hidden');
+            signupForm.classList.add('hidden');
+        });
+
+        signupTab.addEventListener('click', () => {
+            signupTab.classList.add('border-primary', 'text-primary');
+            signupTab.classList.remove('border-transparent', 'text-gray-400');
+            loginTab.classList.remove('border-primary', 'text-primary');
+            loginTab.classList.add('border-transparent', 'text-gray-400');
+            signupForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+        });
+
+        // Theme Toggle Simple Logic
+        
+    </script>
+
+    <script>
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const regNo = document.getElementById("regInput").value.trim();
+    const email = document.getElementById("emailInput").value.trim().toLowerCase();
+
+    try {
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ regNo, email })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            if (data.user.role === 'admin') {
+                alert("Admin login detected");
+                window.location.href = "admin.html";
+            } else {
+                localStorage.setItem("currentStudent", JSON.stringify(data.user));
+                window.location.href = "mark.html";
+            }
+        } else {
+            if (data.message === 'Student not found') {
+                alert("Student not found. Please Sign Up.");
+            } else {
+                alert(data.message || "Login failed");
+            }
+        }
+    } catch (err) {
+        alert("Server error. Ensure backend is running.");
+    }
+});</script>
+<script>
+ document.documentElement.classList.remove('dark');
+</script>
+<script>
+document.getElementById("regInput").addEventListener("keydown", function(e){
+    if(e.key === "Enter"){
+        e.preventDefault();
+        document.getElementById("emailInput").focus();
+    }
+});
+</script>
+<script>
+signupForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("signupName").value.trim();
+    const regNo = document.getElementById("signupReg").value.trim();
+    const email = document.getElementById("signupEmail").value.trim().toLowerCase();
+    const year = document.getElementById("signupYear").value;
+
+    if (!name || !regNo || !email || !year) {
+        alert("Fill all fields");
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, regNo, year })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            localStorage.setItem("currentStudent", JSON.stringify(data.user));
+            alert("Account created successfully!");
+            window.location.href = "camera.html";
+        } else {
+            if (data.message === 'Student ID already exists') {
+                alert("Account already exists, please login.");
+            } else {
+                alert(data.message || "Failed to create account");
+            }
+        }
+    } catch (err) {
+        alert("Server error. Ensure backend is running.");
+    }
+});
+</script>
+</body></html>

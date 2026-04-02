@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Profile | University Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Lexend', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-auto min-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 md:px-20 py-3 sticky top-0 z-50">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-8 flex items-center justify-center bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined">school</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight">Student Portal</h2>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+</div>
+</header>
+<main class="flex flex-1 justify-center py-8 px-4 md:px-10">
+<div class="layout-content-container flex flex-col max-w-[1024px] flex-1 gap-6">
+<div class="flex flex-wrap items-center justify-between gap-4 px-2">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm mb-1">
+<a class="hover:text-primary transition-colors" href="#">Dashboard</a>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-slate-900 dark:text-slate-100 font-medium">Student Profile</span>
+</div>
+<h1 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-100">Profile Overview</h1>
+</div>
+<div class="flex gap-3">
+<button onclick="window.location.href='dashboard.html'" class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-lg font-bold text-sm hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700">
+<span class="material-symbols-outlined text-sm">arrow_back</span>
+<span>Back to Dashboard</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 flex flex-col gap-6">
+<div class="bg-white dark:bg-slate-900 rounded-xl p-6 md:p-8 shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-left">
+<div class="relative">
+<div id="profileImage" class="bg-slate-100 dark:bg-slate-800 bg-center bg-no-repeat aspect-square rounded-2xl size-32 md:size-40 border-4 border-white dark:border-slate-800 shadow-md flex items-center justify-center">
+
+    <span id="defaultAvatar" class="material-symbols-outlined text-6xl text-slate-400">
+        person
+    </span>
+
+</div><button onclick="openSheet()"class="absolute bottom-1 right-1 bg-primary text-white p-2 rounded-lg shadow-lg hover:scale-105 transition-transform flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+</div>
+<div class="flex flex-col justify-center flex-1">
+<div class="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-2">
+<h2 id="profileName" class="text-2xl font-bold text-slate-900 dark:text-slate-100"></h2><span class="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold rounded uppercase tracking-wider">Active</span>
+</div>
+<p class="text-primary font-medium text-lg mb-1">Bsc Mathematics with Computer Applications</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center justify-center md:justify-start gap-2">
+<span class="material-symbols-outlined text-base">badge</span>
+                                            Register No: <span id="profileReg"></span>
+                                        </p>
+</div>
+</div>
+<div class="mt-10 border-t border-slate-100 dark:border-slate-800 pt-8">
+<h3 class="text-sm font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-6">Personal Information</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
+<div class="flex flex-col gap-1.5"><div class="flex justify-between items-start"><div class="flex flex-col gap-1.5"><label class="text-slate-400 dark:text-slate-500 text-xs font-semibold uppercase tracking-wider">Full Name</label><p id="profileNameInfo" class="text-slate-900 dark:text-slate-100 font-medium"></p></div><button onclick="enableEdit('name')" class="text-slate-400 hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-sm">edit</span></button></div></div>
+<div class="flex flex-col gap-1.5"><div class="flex justify-between items-start"><div class="flex flex-col gap-1.5"><label class="text-slate-400 dark:text-slate-500 text-xs font-semibold uppercase tracking-wider">Register Number</label><p id="profileRegInfo" class="text-slate-900 dark:text-slate-100 font-medium"></p></div><button onclick="enableEdit('id')" class="text-slate-400 hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-sm">edit</span></button></div></div>
+<div class="flex flex-col gap-1.5"><div class="flex justify-between items-start"><div class="flex flex-col gap-1.5"><label class="text-slate-400 dark:text-slate-500 text-xs font-semibold uppercase tracking-wider">Year of Study</label><p id="profileYear" class="text-slate-900 dark:text-slate-100 font-medium"></p></div><button onclick="enableEdit('year')"class="text-slate-400 hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-sm">edit</span></button></div></div>
+<div class="flex flex-col gap-1.5"><div class="flex justify-between items-start"><div class="flex flex-col gap-1.5"><label class="text-slate-400 dark:text-slate-500 text-xs font-semibold uppercase tracking-wider">Email ID</label><p id="profileEmail" class="text-slate-900 dark:text-slate-100 font-medium"></p></div><button onclick="enableEdit('email')" class="text-slate-400 hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-sm">edit</span></button></div></div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-6">
+<div class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">Quick Actions</h3>
+<div class="flex flex-col gap-3">
+<button onclick="window.location.href='mark.html'" class="w-full flex items-center justify-center gap-2 py-3 bg-primary text-white rounded-lg font-bold text-sm shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all"><span class="material-symbols-outlined">how_to_reg</span>
+<span>Mark Attendance</span>
+</button>
+<button onclick="window.location.href='student.html'" class="w-full flex items-center justify-center gap-2 py-3 bg-slate-100 dark:bg-slate-800 text-primary rounded-lg font-bold text-sm hover:bg-primary/10 transition-all"><span class="material-symbols-outlined">dashboard</span>
+<span>Student Dashboard</span>
+</button>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">Academic Status</h3>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-sm mb-1.5">
+<span class="text-slate-500 dark:text-slate-400 font-medium">Attendance Rate</span>
+<span id="profileAttendance" class="text-slate-900 dark:text-slate-100 font-bold">0%</span>
+</div>
+<div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">
+<div id="profileAttendanceBar" class="bg-green-500 h-2 rounded-full" style="width: 0%"></div>
+</div>
+</div>
+</div>
+<div class="mt-6 p-4 bg-primary/5 dark:bg-primary/10 rounded-lg border border-primary/20">
+<p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed italic">
+                                        "Alex is currently ranked in the top 5% of the Computer Science Engineering department."
+                                    </p>
+</div>
+</div>
+<div class="bg-primary text-white rounded-xl p-6 shadow-xl relative overflow-hidden group">
+<div class="relative z-10">
+<h3 class="text-lg font-bold mb-2">Need Assistance?</h3>
+<p class="text-white/80 text-sm mb-4">Contact Advisor - prancyka@gmail.com</p>
+<a class="inline-flex items-center gap-2 text-sm font-bold bg-white text-primary px-4 py-2 rounded-lg hover:bg-slate-100 transition-colors" href="https://mail.google.com/mail/?view=cm&fs=1&to=prancyka@gmail.com" target="_blank">
+                                        Email Advisor
+                                    </a>
+</div>
+<div class="absolute -right-6 -bottom-6 opacity-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-9xl">support_agent</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const studentData = JSON.parse(localStorage.getItem("currentStudent"));
+
+  if (!studentData) {
+    alert("No student logged in.");
+    window.location.href = "login.html";
+    return;
+  }
+
+  // Fill Profile Data
+  document.getElementById("profileName").innerText = studentData.name;
+document.getElementById("profileNameInfo").innerText = studentData.name;
+
+document.getElementById("profileReg").innerText = studentData.id;
+document.getElementById("profileRegInfo").innerText = studentData.id;
+
+document.getElementById("profileEmail").innerText = studentData.email;
+document.getElementById("profileYear").innerText = studentData.year;
+// Load saved profile image securely from active student data
+const savedImage = studentData.photo || localStorage.getItem("profileImage");
+
+if (savedImage) {
+    const imageDiv = document.getElementById("profileImage");
+    const defaultIcon = document.getElementById("defaultAvatar");
+
+    imageDiv.style.backgroundImage = `url(${savedImage})`;
+    imageDiv.classList.add("bg-cover");
+
+    if (defaultIcon) {
+        defaultIcon.style.display = "none";
+    }
+}
+
+// Seamlessly Load Real Attendance Math dynamically identically to student.html
+fetch(`/api/attendance/student/${studentData.id}`)
+  .then(res => res.json())
+  .then(data => {
+      if(data.success && data.records) {
+          const totalRecords = data.records.length;
+          const present = data.records.filter(r => r.status === 'Present').length;
+          const late = data.records.filter(r => r.status === 'Late').length;
+          const presentPercent = totalRecords === 0 ? 0 : Math.round(((present + late) / totalRecords) * 100);
+          
+          document.getElementById('profileAttendance').innerText = `${presentPercent}%`;
+          document.getElementById('profileAttendanceBar').style.width = `${presentPercent}%`;
+      }
+  }).catch(err => console.error("Could not load attendance stats for profile", err));
+});
+</script>
+<script>
+function openGallery() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+
+    input.onchange = function (event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            setProfileImage(e.target.result);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    input.click();
+    closeSheet();
+}
+
+function openCamera() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.capture = "environment";
+
+    input.onchange = function (event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            setProfileImage(e.target.result);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    input.click();
+    closeSheet();
+}
+
+function setProfileImage(imageData) {
+    const imageDiv = document.getElementById("profileImage");
+    const defaultIcon = document.getElementById("defaultAvatar");
+
+    imageDiv.style.backgroundImage = `url(${imageData})`;
+    imageDiv.classList.add("bg-cover");
+
+    if (defaultIcon) {
+        defaultIcon.style.display = "none";
+    }
+
+    pushPhotoUpdate(imageData);
+}
+
+// Push to permanent DB securely 
+async function pushPhotoUpdate(imageData) {
+    const studentData = JSON.parse(localStorage.getItem("currentStudent"));
+    if (!studentData) return;
+    
+    try {
+        const response = await fetch(`/api/student/profile/${studentData.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ photo: imageData })
+        });
+        const data = await response.json();
+        if(data.success) {
+            localStorage.setItem("currentStudent", JSON.stringify(data.user));
+            if(imageData) localStorage.setItem("profileImage", imageData);
+            else localStorage.removeItem("profileImage");
+        } else {
+            console.error("Photo API error:", data.message);
+        }
+    } catch(err) {
+        console.error("Connection Failed:", err);
+    }
+}
+function openSheet() {
+    document.getElementById("bottomSheet").classList.remove("hidden");
+}
+
+function closeSheet() {
+    document.getElementById("bottomSheet").classList.add("hidden");
+}
+
+function removePhoto() {
+    const imageDiv = document.getElementById("profileImage");
+    const defaultIcon = document.getElementById("defaultAvatar");
+
+    imageDiv.style.backgroundImage = "";
+    defaultIcon.style.display = "block";
+
+    pushPhotoUpdate("");
+    closeSheet();
+}
+function enableEdit(field) {
+
+    // Decide which element to edit
+    let elementId = "";
+
+    if (field === "name") elementId = "profileNameInfo";
+    if (field === "id") elementId = "profileRegInfo";
+    if (field === "year") elementId = "profileYear";
+    if (field === "email") elementId = "profileEmail";
+
+    const textElement = document.getElementById(elementId);
+    const currentValue = textElement.innerText;
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = currentValue;
+    input.className = "border px-2 py-1 rounded w-full";
+
+    textElement.replaceWith(input);
+    input.focus();
+
+    input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            saveEdit(input, field, elementId);
+        }
+    });
+
+    input.addEventListener("blur", function () {
+        saveEdit(input, field, elementId);
+    });
+}
+
+async function saveEdit(inputElement, field, elementId) {
+
+    const newValue = inputElement.value.trim();
+    if (!newValue) { alert("Field cannot be empty!"); return; }
+
+    const studentData = JSON.parse(localStorage.getItem("currentStudent"));
+    const oldId = studentData.id;
+
+    // Secure mapping for backend fields
+    const updateBody = {};
+    if (field === "name") updateBody.name = newValue;
+    if (field === "id") updateBody.regNo = newValue;
+    if (field === "year") updateBody.year = newValue;
+    if (field === "email") updateBody.email = newValue;
+
+    try {
+        const response = await fetch(`/api/student/profile/${oldId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updateBody)
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            localStorage.setItem("currentStudent", JSON.stringify(data.user));
+
+            const p = document.createElement("p");
+            p.id = elementId;
+            p.className = "text-slate-900 dark:text-slate-100 font-medium";
+            p.innerText = newValue;
+            inputElement.replaceWith(p);
+
+            // Dynamically refresh visual display hooks
+            if (field === "name") document.getElementById("profileName").innerText = newValue;
+            if (field === "id") document.getElementById("profileReg").innerText = newValue;
+        } else {
+            alert(data.message || "Failed to update profile securely.");
+            restoreOriginal(inputElement, studentData[field === "id" ? "id" : field], elementId);
+        }
+    } catch (err) {
+        alert("Server error. Could not save changes securely to the cloud.");
+        restoreOriginal(inputElement, studentData[field === "id" ? "id" : field], elementId);
+    }
+}
+
+function restoreOriginal(inputElement, originalValue, elementId) {
+    const p = document.createElement("p");
+    p.id = elementId;
+    p.className = "text-slate-900 dark:text-slate-100 font-medium";
+    p.innerText = originalValue || "--";
+    inputElement.replaceWith(p);
+}</script>
+<div id="bottomSheet" class="fixed inset-0 bg-black/40 hidden z-50 flex items-end">
+
+  <div class="bg-white w-full rounded-t-2xl p-6">
+
+    <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-6"></div>
+
+    <button onclick="openGallery()" class="w-full flex items-center gap-3 py-4 border-b">
+      <span class="material-symbols-outlined">photo</span>
+      Choose from library
+    </button>
+
+   
+    <button onclick="removePhoto()" class="w-full flex items-center gap-3 py-4 text-red-500">
+      <span class="material-symbols-outlined">delete</span>
+      Remove current picture
+    </button>
+
+    <button onclick="closeSheet()" class="w-full mt-4 py-3 text-gray-500">
+      Cancel
+    </button>
+
+  </div>
+</div>
+</body></html>

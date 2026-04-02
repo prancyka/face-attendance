@@ -1,0 +1,14 @@
+TODAY: 2026-03-30
+PRESENT LIST: [
+  {
+    studentId: '2413321076033',
+    subject: 'sv',
+    status: 'Present',
+    period: 1,
+    dayOrder: 4,
+    time: '11:34 AM',
+    date: '2026-03-30',
+    year: 'second_year'
+  }
+]
+MAPPED: [ { name: 'Priya', time: '11:34 AM', year: 'second_year' } ]

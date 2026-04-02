@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<style>
+  body { opacity: 0; }
+</style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Camera Permissions - Student Face Attendance</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2563eb",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Public Sans', sans-serif;
+        }
+        .bg-primary-gradient {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display transition-colors duration-300">
+<!-- Top Navigation Bar (Simplified for Onboarding) -->
+<nav class="w-full px-6 py-4 flex items-center justify-between border-b border-gray-200 dark:border-white/10 bg-white/50 dark:bg-black/20 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-2">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xl">face_6</span>
+</div>
+<span class="font-bold text-gray-900 dark:text-white tracking-tight">Student Attendance</span>
+</div>
+<div class="flex items-center gap-3">
+
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex items-center justify-center p-4">
+<div class="w-full max-w-[420px] bg-white dark:bg-slate-900 rounded-xl shadow-xl shadow-black/5 dark:shadow-black/40 border border-gray-100 dark:border-white/5 overflow-hidden">
+<!-- Hero Illustration Header -->
+<div class="relative h-48 bg-primary/5 dark:bg-primary/10 flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 opacity-10">
+<div class="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-primary blur-3xl"></div>
+<div class="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-primary blur-3xl"></div>
+</div>
+<div class="relative flex flex-col items-center">
+<div class="size-20 bg-white dark:bg-background-dark rounded-full shadow-lg flex items-center justify-center text-primary mb-3">
+<span class="material-symbols-outlined text-5xl fill-icon">videocam</span>
+</div>
+<div class="absolute top-1 right-0">
+<span class="material-symbols-outlined text-primary text-2xl animate-pulse">verified_user</span>
+</div>
+</div>
+</div>
+<!-- Content Body -->
+<div class="p-8">
+<div class="text-center mb-8">
+<h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Camera Permissions</h1>
+<p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+                        We need access to your camera to verify your identity and securely record your attendance.
+                    </p>
+</div>
+<!-- Feature List -->
+<div class="space-y-4 mb-8">
+<div class="flex items-start gap-4 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+<div class="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-xl">fingerprint</span>
+</div>
+<div>
+<h3 class="font-semibold text-gray-800 dark:text-gray-200 text-sm">Secure biometric verification</h3>
+<p class="text-xs text-gray-500 dark:text-gray-400">Uses unique facial features to prevent identity fraud.</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+<div class="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-xl">event_available</span>
+</div>
+<div>
+<h3 class="font-semibold text-gray-800 dark:text-gray-200 text-sm">Attendance tracking</h3>
+<p class="text-xs text-gray-500 dark:text-gray-400">Logs your presence automatically once verified.</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+<div class="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-xl">gpp_good</span>
+</div>
+<div>
+<h3 class="font-semibold text-gray-800 dark:text-gray-200 text-sm">GDPR Compliant</h3>
+<p class="text-xs text-gray-500 dark:text-gray-400">Your biometric data is encrypted and handled securely.</p>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-3">
+<button class="w-full h-12 bg-primary-gradient hover:opacity-90 active:scale-[0.98] transition-all text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-xl">camera_enhance</span>
+                        Allow Camera Access
+                    </button>
+</div>
+</div>
+<!-- Security Footer -->
+<div class="px-8 py-4 bg-gray-50 dark:bg-black/20 border-t border-gray-100 dark:border-white/5 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm text-gray-400">lock</span>
+<span class="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Encrypted Connection</span>
+</div>
+</div>
+</main>
+<!-- Success Toast Mockup (Hidden by default) -->
+</div>
+<!-- Error/Alert Mockup for Auth (Hidden) -->
+<div class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4" id="auth-error">
+<div class="bg-white dark:bg-background-dark p-8 rounded-2xl max-w-sm w-full text-center">
+<div class="size-16 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mx-auto mb-4">
+<span class="material-symbols-outlined text-4xl">lock_person</span>
+</div>
+<h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Session Expired</h2>
+<p class="text-gray-500 dark:text-gray-400 mb-6">Please log in to your student account to access camera permissions.</p>
+<button class="w-full py-3 bg-primary text-white font-bold rounded-xl">Back to Login</button>
+</div>
+</div>
+<footer class="w-full py-6 text-center text-gray-400 text-xs">
+       Kindly Allow.
+    </footer>
+<!-- Logic Simulation (Mocking the requested functionality) -->
+<script>
+        // Mocking React logic in vanilla JS for the static output
+        document.addEventListener('DOMContentLoaded', () => {
+            const allowBtn = document.querySelector('button.bg-primary-gradient');
+            const successToast = document.getElementById('success-toast');
+            const authError = document.getElementById('auth-error');
+
+            // Simulate Auth Check
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            // For the sake of the preview, we won't actually block it unless manually tested
+            // if (!isLoggedIn) authError.classList.remove('hidden');
+
+            allowBtn.addEventListener('click', () => {
+                allowBtn.disabled = true;
+                allowBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> Processing...';
+                
+                // Simulate permission prompt delay
+                setTimeout(() => {
+                    successToast.classList.remove('hidden');
+                    successToast.classList.add('flex');
+                    
+                    // Simulate navigation delay
+                    setTimeout(() => {
+                        console.log('Redirecting to dashboard...');
+                        // In a real app: history.push('/dashboard')
+                    }, 2000);
+                }, 1200);
+            });
+        });
+    </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const btn = document.querySelector('.bg-primary-gradient');
+  if (!btn) return;
+
+  btn.addEventListener("click", async function () {
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      alert("Camera not supported in this browser");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> Processing...';
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+      // ✅ STORE PERMISSION FOR OTHER PAGES
+      localStorage.setItem("cameraPermission", "granted");
+
+      // stop stream immediately
+      stream.getTracks().forEach(track => track.stop());
+
+      // ✅ go to location page
+      window.location.href = "location.html";
+
+    } catch (err) {
+      alert("Camera permission is required for attendance. Please allow camera access to continue.");
+      // ❌ if denied — reset button
+      btn.disabled = false;
+      btn.innerHTML = `
+        <span class="material-symbols-outlined text-xl">camera_enhance</span>
+        Allow Camera Access
+      `;
+    }
+
+  });
+
+});
+</script>
+<script>
+window.addEventListener("load", function () {
+  document.body.style.opacity = "1";
+});
+</script>
+</body></html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Attendance Dashboard</title>
+<!-- Load Tailwind CSS v3 with forms and container-queries plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style data-purpose="custom-transitions">
+    /* Smooth transitions for interactive elements */
+    .status-badge {
+      transition: all 0.2s ease-in-out;
+    }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/></head>
+<body class="bg-gray-50 font-sans text-gray-900 antialiased min-h-screen">
+<!-- BEGIN: MainContainer -->
+<main class="max-w-6xl mx-auto px-4 py-8 md:py-12">
+<!-- BEGIN: DashboardHeader -->
+<header class="mb-10 text-center md:text-left"><div class="flex justify-between items-start w-full mb-4 md:mb-0"><div class="flex flex-col"><h1 class="text-3xl font-bold text-gray-800 tracking-tight">Student Attendance Dashboard</h1><p class="text-gray-500 mt-2">View and track your daily academic attendance records.</p></div><div onclick="goToProfile()" class="flex items-center space-x-4 bg-white p-3 px-5 rounded-full border border-gray-200 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+    <span id="dashboardStudentName" class="text-lg font-semibold text-gray-700"></span>
+    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+        <span class="material-symbols-outlined text-3xl">person</span>
+    </div>
+</div></div>
+</header>
+<!-- END: DashboardHeader -->
+<!-- BEGIN: SummaryCard -->
+<section class="mb-10" data-purpose="attendance-summary-container"><div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Card 1: Overall Attendance Rate -->
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-lg font-semibold text-gray-700">Overall Attendance Rate</h2>
+<span class="text-2xl font-bold text-blue-600" id="attendanceRateValue">0%</span>
+</div>
+<!-- Progress Bar Container -->
+<div class="w-full bg-gray-100 rounded-full h-4 overflow-hidden mb-4" id="attendanceRate">
+<div class="h-full rounded-full transition-all duration-500 bg-blue-600" style="width: 0%;"></div>
+</div>
+<p class="text-sm text-gray-500">You are maintaining a good attendance record. Keep it up!</p>
+</div>
+<!-- Card 2: Late Logins -->
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center">
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-semibold text-gray-700">Late Logins</h2>
+<span class="text-4xl font-bold text-orange-500" id="lateLoginsValue">0</span>
+</div>
+<p class="mt-4 text-sm text-gray-500">Total late arrivals recorded this semester.</p>
+</div>
+</div></section>
+<!-- END: SummaryCard -->
+<!-- BEGIN: RecordsSection -->
+<section class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden" data-purpose="attendance-table-container">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-gray-50 border-b border-gray-100">
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-600">Date</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-600 text-center">Day Order</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-600">Subject</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-600 text-center">Status</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-600">Marked Time</th>
+</tr>
+<tbody class="divide-y divide-gray-100" id="attendanceTableBody">
+</tbody>
+</thead>
+</table>
+</div>
+<!-- BEGIN: Pagination -->
+<nav aria-label="Table navigation" class="flex items-center justify-between border-t border-gray-100 bg-white px-6 py-4">
+<div class="flex flex-1 justify-between sm:hidden">
+<a class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus-visible:outline-blue-600" href="#">Previous</a>
+<a class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus-visible:outline-blue-600" href="#">Next</a>
+</div>
+<div class="hidden sm:flex sm:flex-1 sm:items-center w-full">
+<div class="flex space-x-2 overflow-x-auto pb-2 pt-2 scrollbar-hide max-w-full px-2" id="datePagination"></div>
+</div>
+</nav>
+<!-- END: Pagination -->
+</section>
+<!-- END: RecordsSection -->
+</main>
+<!-- END: MainContainer -->
+<script>
+const studentDataRaw = localStorage.getItem("currentStudent");
+
+if (studentDataRaw) {
+    const studentData = JSON.parse(studentDataRaw);
+    const name = studentData.name || studentData.fullName || "Student";
+
+    const nameElement = document.getElementById("dashboardStudentName");
+    if (nameElement) nameElement.innerText = name;
+    
+    loadDashboardData(studentData.id);
+    renderPagination();
+} else {
+    window.location.href = "index.html";
+}
+
+function renderPagination() {
+    const today = new Date().getDate();
+    const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+    const paginationContainer = document.getElementById('datePagination');
+    if (!paginationContainer) return;
+
+    let html = `<a aria-label="Previous page" class="relative inline-flex items-center px-2 py-2 text-gray-400 hover:text-gray-600" href="#"><svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" fill-rule="evenodd"></path></svg></a>`;
+
+    for(let i = 1; i <= daysInMonth; i++) {
+        if (i === today) {
+            html += `<a class="relative z-10 inline-flex items-center bg-blue-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 rounded-md flex-shrink-0 mx-0.5" href="#">${i}</a>`;
+        } else {
+            html += `<a class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 rounded-md flex-shrink-0 mx-0.5" href="#">${i}</a>`;
+        }
+    }
+
+    html += `<a aria-label="Next page" class="relative inline-flex items-center px-2 py-2 text-gray-400 hover:text-gray-600" href="#"><svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" fill-rule="evenodd"></path></svg></a>`;
+    paginationContainer.innerHTML = html;
+
+    setTimeout(() => {
+        const active = paginationContainer.querySelector('.bg-blue-600');
+        if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }, 100);
+}
+
+async function loadDashboardData(studentId) {
+    try {
+        const response = await fetch(`/api/attendance/student/${studentId}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            const records = data.records;
+            
+            // Stats calculation
+            const totalRecords = records.length;
+            const present = records.filter(r => r.status === 'Present').length;
+            const late = records.filter(r => r.status === 'Late').length;
+            const presentPercent = totalRecords === 0 ? 0 : Math.round(((present + late) / totalRecords) * 100);
+            
+            document.getElementById('attendanceRateValue').innerText = `${presentPercent}%`;
+            document.getElementById('attendanceRate').innerHTML = `<div class="h-full rounded-full transition-all duration-500 bg-blue-600" style="width: ${presentPercent}%;"></div>`;
+            document.getElementById('lateLoginsValue').innerText = late;
+            
+            // Build Table Rows
+            const tbody = document.getElementById('attendanceTableBody');
+            tbody.innerHTML = '';
+            
+            if (records.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-6 text-gray-500">No attendance records found yet.</td></tr>';
+                return;
+            }
+            
+            records.forEach(r => {
+                let statusBadge = '';
+                if(r.status === 'Present') statusBadge = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Present</span>';
+                else if(r.status === 'Late') statusBadge = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">Late</span>';
+                else statusBadge = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Absent</span>';
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${r.date}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">${r.dayOrder}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">${r.subject}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center">${statusBadge}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${r.time}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    } catch(err) {
+        console.error(err);
+    }
+}
+
+function goToProfile() {
+    window.location.href = "profile.html";
+}
+</script>
+</body></html>

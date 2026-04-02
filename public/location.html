@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Location Permissions - Student Attendance</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2d73f5",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+body {
+  visibility: hidden;
+}
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-grid-pattern {
+            background-image: radial-gradient(circle at 2px 2px, rgba(45, 115, 245, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="w-full border-b border-slate-200 dark:border-primary/20 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+<div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="bg-primary p-1.5 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-xl">fact_check</span>
+</div>
+<h2 class="text-lg font-bold tracking-tight text-slate-800 dark:text-white">Student Attendance</h2>
+</div>
+<div class="flex items-center gap-3">
+
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex items-center justify-center p-4 bg-grid-pattern">
+<div class="w-full max-w-[420px] bg-white dark:bg-slate-900 rounded-xl shadow-xl shadow-primary/10 border border-slate-100 dark:border-primary/20 overflow-hidden">
+<!-- Hero Icon Section -->
+<div class="pt-10 pb-6 flex flex-col items-center">
+<div class="relative">
+<div class="absolute inset-0 bg-primary/20 blur-2xl rounded-full"></div>
+<div class="relative size-24 rounded-full bg-gradient-to-tr from-primary to-blue-400 flex items-center justify-center text-white shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-5xl">location_on</span>
+</div>
+</div>
+<h1 class="mt-6 text-2xl font-bold text-slate-900 dark:text-white">Location Permissions</h1>
+<p class="mt-3 px-8 text-center text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                    We need access to your location to verify you are present on campus and record your attendance accurately.
+                </p>
+</div>
+<!-- Features List -->
+<div class="px-8 space-y-5 pb-8">
+<div class="flex gap-4">
+<div class="flex-shrink-0 size-10 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">domain</span>
+</div>
+<div>
+<h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100">Campus Verification</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">Ensures attendance is only recorded within university premises.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex-shrink-0 size-10 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">verified_user</span>
+</div>
+<div>
+<h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100">Fraud Prevention</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">Prevents remote check-ins or location spoofing attempts.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex-shrink-0 size-10 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">privacy_tip</span>
+</div>
+<div>
+<h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100">Privacy First</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">Location data is only used during the check-in process.</p>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="px-8 pb-8 space-y-4">
+<button class="w-full h-14 bg-gradient-to-r from-primary to-blue-600 hover:to-blue-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined text-xl">near_me</span>
+<span>Enable Location Access</span>
+</button>
+
+</div>
+<!-- Card Footer Badge -->
+<div class="bg-slate-50 dark:bg-slate-800/50 py-4 border-t border-slate-100 dark:border-primary/5 flex flex-col items-center gap-2">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">lock</span>
+                    Secure &amp; Private
+                </div>
+</div>
+</div>
+</main>
+<!-- Global Footer -->
+<footer class="w-full py-6 text-center text-xs text-slate-400 dark:text-slate-600">
+<p>Kindly Allow.</p>
+</footer>
+<!-- Location Preview Placeholder (Hidden UI Context) -->
+<div class="hidden">
+<img data-alt="A stylized map of a university campus showing lecture halls and buildings" data-location="University Campus Map" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRM-cK6EIzHsgm2NxEXPaC9vYFGce_OgCU78dmxFmoT_aBuW0ExtwFAMRa_BA2nUbe-i7hN8Dkw5LmlpZLKao5JKR74Fer3T0A7DXRKNxJBnqQW_dEllsi7zgrdICLZ8CCHtpWbpnHeL8Z2FdBM9G3PLw5EPU-LJ7XHKZeb_tokK3I_9Mmd-1_QRwLHivRRhxOAdXtA_OKz-atp3Hj7uUNKZF0oGQ0VXe7-1G3St3fBv-lmCqZCgZtS5o_nHeybUeKkT-B_9sYXDeJ"/>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const btn = document.querySelector('button');
+
+  if (!btn) return;
+
+  btn.addEventListener("click", function () {
+
+    if (!navigator.geolocation) {
+      alert("Geolocation not supported in this browser");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerText = "Requesting permission...";
+
+    navigator.geolocation.getCurrentPosition(
+      function (pos) {
+        // ✅ save permission flag
+        localStorage.setItem("locationPermission", "granted");
+
+        // ✅ go next page
+        window.location.href = "enroll.html";
+      },
+      function (err) {
+        alert("Location permission is required for attendance. Please allow location access to continue.");
+        btn.disabled = false;
+        btn.innerText = "Enable Location Access";
+      }
+    );
+
+  });
+
+});
+</script>
+<script>
+window.addEventListener("load", function () {
+  document.body.style.visibility = "visible";
+});
+</script>
+</body></html>

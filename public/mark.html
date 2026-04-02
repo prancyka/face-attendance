@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Attendance Portal | Mark Attendance</title>
+<!-- Tailwind CSS with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- face-api.js CDN -->
+<script defer="" src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<style data-purpose="custom-animations">
+    @keyframes pulse-soft {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+      50% { transform: scale(1.02); box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+    }
+    .animate-pulse-soft {
+      animation: pulse-soft 2s infinite;
+    }
+    .fade-in {
+      animation: fadeIn 0.3s ease-in-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .video-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1rem;
+      background: #000;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+<style data-purpose="typography">
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-brand-50 min-h-screen text-slate-800">
+<!-- BEGIN: MainHeader -->
+<header class="bg-white border-b border-brand-100 sticky top-0 z-50">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="bg-brand-600 p-2 rounded-lg">
+<svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<h1 class="text-xl font-bold text-brand-900 tracking-tight">Student Attendance Portal</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:block text-sm text-slate-500 font-medium" id="current-time-display">
+<!-- Time will be updated by JS -->
+</div>
+<a href="profile.html" class="flex items-center gap-2 bg-brand-50 hover:bg-brand-100 text-brand-700 px-3 py-2 rounded-lg transition-colors border border-brand-200" title="Go to Profile">
+<svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+<span class="text-sm font-semibold">Profile</span>
+</a>
+</div>
+</div>
+</header>
+<!-- END: MainHeader -->
+<main class="max-w-4xl mx-auto px-4 py-8">
+<!-- BEGIN: ClassInformationCard -->
+<section class="mb-8" data-purpose="class-info-section">
+<div class="bg-white rounded-2xl shadow-sm border border-brand-100 overflow-hidden">
+<div class="bg-brand-600 px-6 py-3">
+<h2 class="text-white font-semibold flex items-center gap-2">
+<svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+            Current Class Information
+          </h2>
+</div>
+<div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="space-y-1">
+<p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Subject</p>
+<p class="text-lg font-semibold text-slate-800 tracking-tight" id="info-subject">Loading...</p>
+</div>
+<div class="space-y-1 border-l-0 md:border-l md:pl-6 border-slate-100">
+<p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Time Slot</p>
+<p class="text-sm text-slate-500" id="info-day">-</p>
+<p class="text-lg font-semibold text-slate-800" id="info-timing">--:-- - --:--</p>
+</div>
+<div class="space-y-1 border-l-0 md:border-l md:pl-6 border-slate-100">
+<p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Time Left</p>
+<p class="text-xl font-bold font-mono text-brand-600" id="info-timer">--:--</p>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800" id="status-pill">Active Now</span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: ClassInformationCard -->
+<!-- BEGIN: InteractionArea -->
+<section class="flex flex-col items-center justify-center space-y-8 py-4">
+<!-- Initial Action Button -->
+<div class="text-center space-y-6" id="initial-action">
+<div class="bg-blue-50 p-8 rounded-full">
+<svg class="h-24 w-24 text-brand-600" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M10 21h4m1.5-3.5L12 21l-3.5-3.5m10-5.5a8 8 0 11-16 0 8 8 0 0116 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+<path d="M12 7v5l3 3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+</div>
+<div>
+<h3 class="text-2xl font-bold text-slate-800">Ready to Mark Attendance?</h3>
+<p class="text-slate-500 mt-2">Ensure you are within the campus and visible to the camera.</p>
+</div>
+<button class="bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 px-10 rounded-full text-xl shadow-lg transition-all transform active:scale-95 animate-pulse-soft" id="btn-start-process">
+          Mark Attendance
+        </button>
+</div>
+<!-- Camera Interface (Hidden Initially) -->
+<div class="hidden w-full max-w-2xl fade-in" id="camera-interface">
+<div class="video-container shadow-2xl border-4 border-white aspect-video relative">
+<video autoplay="" class="w-full h-full object-cover" height="560" id="video" muted="" width="720"></video>
+<!-- Overlay Loading/Scanning State -->
+<div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white z-10" id="scanning-overlay">
+<div class="w-12 h-12 border-4 border-brand-400 border-t-transparent rounded-full animate-spin mb-4"></div>
+<p class="font-medium" id="status-text">Initializing Camera...</p>
+</div>
+<!-- Result Overlays -->
+<div class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center" id="result-overlay">
+<!-- Success/Error icons and text will be injected here -->
+</div>
+</div>
+<p class="text-center mt-4 text-sm text-slate-500 italic">Position your face within the frame and look directly at the camera.</p>
+</div>
+</section>
+<!-- END: InteractionArea -->
+</main>
+<!-- BEGIN: Scripts -->
+<script data-purpose="app-logic">
+    // --- Configuration & State ---
+    let CAMPUS_COORDS = { lat: 13.0604, lng: 80.2642 }; // Will be updated to current location for testing
+    const DISTANCE_THRESHOLD = 500; // meters (Updated as requested)
+    const FACE_THRESHOLD = 0.45;
+    
+    let stream = null;
+    let modelsLoaded = false;
+    let classTimerInterval = null;
+
+    // --- DOM Elements ---
+    const initialAction = document.getElementById('initial-action');
+    const cameraInterface = document.getElementById('camera-interface');
+    const video = document.getElementById('video');
+    const btnStart = document.getElementById('btn-start-process');
+    const statusText = document.getElementById('status-text');
+    const resultOverlay = document.getElementById('result-overlay');
+    const timeDisplay = document.getElementById('current-time-display');
+
+    // --- Initialization ---
+    window.addEventListener('DOMContentLoaded', () => {
+      loadClassData();
+      startTimeUpdate();
+      preloadModels();
+    });
+
+   async function loadClassData() {
+  const student = JSON.parse(localStorage.getItem('currentStudent'));
+  if (!student) {
+      showNoClass();
+      return;
+  }
+
+  let todayDayOrder = 1;
+  let savedSchedule = {};
+  
+  try {
+      const resDay = await fetch('/api/settings/dayOrder');
+      const dayData = await resDay.json();
+      todayDayOrder = dayData.dayOrder || 1;
+      
+      const resSch = await fetch(`/api/schedule/${student.year}/${todayDayOrder}`);
+      const schData = await resSch.json();
+      savedSchedule = schData.schedule || {};
+  } catch (err) {
+      console.error("Error loading schedule from backend");
+  }
+
+  const now = new Date();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+  const timeSlots = [
+    { period: 1, start: savedSchedule.p1?.start || "11:30", end: savedSchedule.p1?.end || "12:25", value: savedSchedule.p1?.subject || savedSchedule.p1 },
+    { period: 2, start: savedSchedule.p2?.start || "12:25", end: savedSchedule.p2?.end || "13:20", value: savedSchedule.p2?.subject || savedSchedule.p2 },
+    { period: 3, start: savedSchedule.p3?.start || "14:00", end: savedSchedule.p3?.end || "14:55", value: savedSchedule.p3?.subject || savedSchedule.p3 },
+    { period: 4, start: savedSchedule.p4?.start || "14:55", end: savedSchedule.p4?.end || "15:50", value: savedSchedule.p4?.subject || savedSchedule.p4 },
+    { period: 5, start: savedSchedule.p5?.start || "15:50", end: savedSchedule.p5?.end || "16:45", value: savedSchedule.p5?.subject || savedSchedule.p5 }
+  ];
+
+  let activeClass = null;
+
+  for (let slot of timeSlots) {
+    if (!slot.value) continue;
+
+    const [sH, sM] = slot.start.split(":").map(Number);
+    const [eH, eM] = slot.end.split(":").map(Number);
+    const startMin = sH * 60 + sM;
+    const endMin = eH * 60 + eM;
+
+    if (currentMinutes >= startMin && currentMinutes <= endMin) {
+      activeClass = slot;
+      break;
+    }
+  }
+
+  if (!activeClass) {
+    showNoClass();
+    return;
+  }
+
+  document.getElementById('info-subject').innerText = activeClass.value;
+  document.getElementById('info-timing').innerText = activeClass.start + " - " + activeClass.end;
+  document.getElementById('info-day').innerText = "Day Order: " + todayDayOrder;
+  
+  // Enforce exactly 15 minutes window from the class start time
+  const [sH, sM] = activeClass.start.split(":").map(Number);
+  let strictEndMinutes = sH * 60 + sM + 15;
+  let strictEndH = Math.floor(strictEndMinutes / 60);
+  let strictEndM = strictEndMinutes % 60;
+  let attendanceDeadline = `${String(strictEndH).padStart(2, '0')}:${String(strictEndM).padStart(2, '0')}`;
+  
+  startCountdown(attendanceDeadline);
+
+  localStorage.setItem("currentPeriod", JSON.stringify({
+      period: activeClass.period,
+      subject: activeClass.value,
+      startTime: activeClass.start,
+      endTime: activeClass.end,
+      dayOrder: todayDayOrder
+  }));
+}
+function showNoClass() {
+  document.getElementById('info-subject').innerText = "-";
+  document.getElementById('info-timing').innerText = "-";
+  document.getElementById('info-day').innerText = "-";
+  document.getElementById('info-timer').innerText = "--:--";
+  document.getElementById('status-pill').innerText = "No Class";
+  document.getElementById('status-pill').className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800";
+}
+
+function startCountdown(endTimeStr) {
+    if(classTimerInterval) clearInterval(classTimerInterval);
+    const [eH, eM] = endTimeStr.split(":").map(Number);
+    
+    const update = () => {
+        const now = new Date();
+        const end = new Date(now);
+        end.setHours(eH, eM, 0, 0);
+        const diffMs = end - now;
+        
+        if (diffMs <= 0) {
+            document.getElementById('info-timer').innerText = "Ended";
+            clearInterval(classTimerInterval);
+            return;
+        }
+        
+        const m = Math.floor(diffMs / 60000);
+        const s = Math.floor((diffMs % 60000) / 1000);
+        document.getElementById('info-timer').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    };
+    update();
+    classTimerInterval = setInterval(update, 1000);
+}
+    function startTimeUpdate() {
+      const update = () => {
+        const now = new Date();
+        timeDisplay.innerText = now.toLocaleString('en-US', { 
+          weekday: 'short', month: 'short', day: 'numeric', 
+          hour: '2-digit', minute: '2-digit', second: '2-digit' 
+        });
+      };
+      update();
+      setInterval(update, 1000);
+    }
+
+    // --- Core Logic ---
+
+    async function preloadModels() {
+      try {
+        const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model'; // Better CDN for models
+        await Promise.all([
+          faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+          faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+          faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+        ]);
+        modelsLoaded = true;
+        console.log("Models Loaded");
+      } catch (err) {
+        console.error("Model load failed", err);
+      }
+    }
+
+    btnStart.addEventListener('click', async () => {
+      if (localStorage.getItem('cameraPermission') !== 'granted') {
+          window.location.href = 'camera.html';
+          return;
+      }
+      if (localStorage.getItem('locationPermission') !== 'granted') {
+          window.location.href = 'location.html';
+          return;
+      }
+
+      initialAction.classList.add('hidden');
+      cameraInterface.classList.remove('hidden');
+      
+      const isTimeValid = checkTime();
+      if(!isTimeValid) {
+        showResult('error', 'Outside Period Time', 'Attendance can only be marked during the scheduled class time.');
+        return;
+      }
+
+      statusText.innerText = "Verifying Location...";
+      const isLocationValid = await checkLocation();
+      if(!isLocationValid) {
+        showResult('error', 'Outside Campus', 'You must be within the university premises to mark attendance.');
+        return;
+      }
+
+      startCamera();
+    });
+
+    function checkTime() {
+      const data = JSON.parse(localStorage.getItem('currentPeriod'));
+      if(!data) return true; // Default true if no metadata found for demo
+      
+      const now = new Date();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      
+      const [sH, sM] = data.startTime.split(':').map(Number);
+      const [eH, eM] = data.endTime.split(':').map(Number);
+      
+      const startMin = sH * 60 + sM;
+      const endMin = eH * 60 + eM;
+      
+      return currentMinutes >= startMin && currentMinutes <= endMin;
+    }
+
+    async function checkLocation() {
+      return new Promise((resolve) => {
+        if (!navigator.geolocation) {
+          resolve(false);
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition((position) => {
+          // Update CAMPUS_COORDS to current location to bypass checks as requested
+          CAMPUS_COORDS.lat = position.coords.latitude;
+          CAMPUS_COORDS.lng = position.coords.longitude;
+          
+          const dist = haversineDistance(
+            position.coords.latitude, 
+            position.coords.longitude, 
+            CAMPUS_COORDS.lat, 
+            CAMPUS_COORDS.lng
+          );
+          resolve(dist <= DISTANCE_THRESHOLD);
+        }, () => resolve(false));
+      });
+    }
+
+    function haversineDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371e3; // metres
+      const φ1 = lat1 * Math.PI/180;
+      const φ2 = lat2 * Math.PI/180;
+      const Δφ = (lat2-lat1) * Math.PI/180;
+      const Δλ = (lon2-lon1) * Math.PI/180;
+      const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                Math.cos(φ1) * Math.cos(φ2) *
+                Math.sin(Δλ/2) * Math.sin(Δλ/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    async function startCamera() {
+      statusText.innerText = "Starting Camera...";
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: {} });
+        video.srcObject = stream;
+        
+        video.onloadedmetadata = () => {
+          statusText.innerText = "Scanning Face...";
+          document.getElementById('scanning-overlay').classList.add('bg-black/10');
+          performRecognition();
+        };
+      } catch (err) {
+        showResult('error', 'Camera Error', 'Unable to access camera. Please check permissions.');
+      }
+    }
+
+    async function performRecognition() {
+      if(!modelsLoaded) await preloadModels();
+
+      const student = JSON.parse(localStorage.getItem('currentStudent'));
+      if(!student) {
+        showResult('error', 'Not Logged In', 'Please login to continue.');
+        stopCamera();
+        return;
+      }
+
+      let enrolledData = null;
+      try {
+        const response = await fetch(`/api/face/descriptors/${student.id}`);
+        const data = await response.json();
+        if(data.success && data.descriptors) {
+            enrolledData = data.descriptors;
+        }
+      } catch (err) {}
+
+      if(!enrolledData) {
+        showResult('error', 'No Enrolled Data', 'You haven\'t enrolled your face in the system yet.');
+        stopCamera();
+        return;
+      }
+
+      // Convert stored array back to Float32Array for face-api
+      const labeledDescriptors = [
+        new faceapi.LabeledFaceDescriptors(
+          student.name,
+          enrolledData.map(desc => new Float32Array(desc))
+        )
+      ];
+      const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, FACE_THRESHOLD);
+
+      let matchCount = 0;
+      let unknownCount = 0;
+
+      const interval = setInterval(async () => {
+        const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+          .withFaceLandmarks()
+          .withFaceDescriptors();
+
+        if (detections.length > 0) {
+          let matched = false;
+          let bestMatchedLabel = null;
+
+          for (const detection of detections) {
+            const bestMatch = faceMatcher.findBestMatch(detection.descriptor);
+            if (bestMatch.label !== 'unknown') {
+              matched = true;
+              bestMatchedLabel = bestMatch.label;
+              break;
+            }
+          }
+
+          if (matched) {
+            matchCount++;
+            unknownCount = 0;
+
+            if (matchCount >= 3) {
+              clearInterval(interval);
+              clearTimeout(timeoutId);
+              handleSuccess(bestMatchedLabel);
+            }
+          } else {
+            unknownCount++;
+            matchCount = 0;
+
+            if (unknownCount >= 2) {
+              clearInterval(interval);
+              clearTimeout(timeoutId);
+              stopCamera();
+              alert("Trying to fool? not today");
+              window.location.reload();
+            }
+          }
+        }
+      }, 500);
+
+      // Timeout after 15 seconds
+      const timeoutId = setTimeout(() => {
+        if(interval) {
+          clearInterval(interval);
+          if(!resultOverlay.classList.contains('bg-green-600')) {
+            stopCamera();
+            alert("Trying to fool? not today");
+            window.location.reload();
+          }
+        }
+      }, 15000);
+    }
+
+    async function handleSuccess(label) {
+      stopCamera();
+      
+      const student = JSON.parse(localStorage.getItem('currentStudent'));
+      const periodData = JSON.parse(localStorage.getItem('currentPeriod')) || {};
+      const today = new Date();
+      const date = today.toISOString().split("T")[0];
+      const time = today.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      // Determine Late rules
+      // 15 minutes logic: If current time > startTime + 15mins, status is Late. Else Present.
+      let attendanceStatus = 'Present';
+      if (periodData.startTime) {
+          const [sH, sM] = periodData.startTime.split(':').map(Number);
+          const startMins = sH * 60 + sM;
+          const currentMins = today.getHours() * 60 + today.getMinutes();
+          if (currentMins > startMins + 15) {
+              attendanceStatus = 'Late';
+          }
+      }
+
+      try {
+        const response = await fetch('/api/attendance/mark', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                studentId: student.id,
+                subject: document.getElementById('info-subject').innerText,
+                status: attendanceStatus,
+                period: periodData.period || 1,
+                dayOrder: periodData.dayOrder || 1,
+                time: time,
+                date: date,
+                year: student.year
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showResult('success', 'Face Recognized', `Welcome, ${label}. Attendance marked successfully!`);
+            setTimeout(() => {
+                window.location.href = 'student.html';
+            }, 2500);
+        } else {
+            showResult('error', 'Attendance Failed', data.message || 'Could not mark attendance.');
+        }
+      } catch (err) {
+        showResult('error', 'Server Error', 'Failed to communicate with the server.');
+      }
+    }
+
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    }
+
+    function showResult(type, title, message) {
+      const isSuccess = type === 'success';
+      const bgColor = isSuccess ? 'bg-green-600/95' : 'bg-red-600/95';
+      const icon = isSuccess 
+        ? `<svg class="w-20 h-20 text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`
+        : `<svg class="w-20 h-20 text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+
+      resultOverlay.innerHTML = `
+        <div class="fade-in flex flex-col items-center">
+          ${icon}
+          <h2 class="text-2xl font-bold text-white mb-2">${title}</h2>
+          <p class="text-white/90 max-w-xs">${message}</p>
+          ${!isSuccess ? `<button onclick="location.reload()" class="mt-6 px-6 py-2 bg-white text-red-600 rounded-full font-bold">Try Again</button>` : ''}
+        </div>
+      `;
+      
+      resultOverlay.className = `absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center ${bgColor}`;
+      resultOverlay.classList.remove('hidden');
+      document.getElementById('scanning-overlay').classList.add('hidden');
+    }
+  </script>
+<!-- END: Scripts -->
+<script>
+
+function markAttendance(period, subject, status) {
+
+    // Get today date
+    const today = new Date();
+    const date = today.toISOString().split("T")[0];
+
+    // Get current time
+    const time = today.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    // Get day order from localStorage (admin should set this)
+    const dayOrder = localStorage.getItem("currentDayOrder") || 1;
+
+    // Get existing records
+    let records = JSON.parse(localStorage.getItem("attendanceRecords")) || [];
+
+    // Prevent duplicate marking
+    const alreadyMarked = records.find(r =>
+        r.date === date && r.period === period
+    );
+
+    if (alreadyMarked) {
+        alert("Attendance already marked for this period.");
+        return;
+    }
+
+    // Create new record
+    const newRecord = {
+        date: date,
+        dayOrder: dayOrder,
+        period: period,
+        subject: subject,
+        status: status,
+        time: time
+    };
+
+    // Push to array
+    records.push(newRecord);
+
+    // Save to localStorage
+    localStorage.setItem("attendanceRecords", JSON.stringify(records));
+
+    alert("Attendance Marked Successfully!");
+
+}
+
+</script>
+</body></html>
