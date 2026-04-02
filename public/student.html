@@ -126,7 +126,7 @@ function renderPagination() {
 
 async function loadDashboardData(studentId) {
     try {
-        const response = await fetch(`/api/attendance/student/${studentId}`);
+        const response = await fetch(`https://face-attendance-production-a7ed.up.railway.app/api/attendance/student/${studentId}`);
         const data = await response.json();
         
         if (data.success) {

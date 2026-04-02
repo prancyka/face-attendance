@@ -250,7 +250,7 @@
         startBtn.textContent = "Saving...";
         startBtn.disabled = true;
         
-        const response = await fetch('/api/face/enroll', {
+        const response = await fetch('https://face-attendance-production-a7ed.up.railway.app/api/face/enroll', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ studentId: student.id, descriptors: enrolledDescriptors })

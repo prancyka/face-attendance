@@ -190,11 +190,11 @@
   let savedSchedule = {};
   
   try {
-      const resDay = await fetch('/api/settings/dayOrder');
+      const resDay = await fetch('https://face-attendance-production-a7ed.up.railway.app/api/settings/dayOrder');
       const dayData = await resDay.json();
       todayDayOrder = dayData.dayOrder || 1;
       
-      const resSch = await fetch(`/api/schedule/${student.year}/${todayDayOrder}`);
+      const resSch = await fetch(`https://face-attendance-production-a7ed.up.railway.app/api/schedule/${student.year}/${todayDayOrder}`);
       const schData = await resSch.json();
       savedSchedule = schData.schedule || {};
   } catch (err) {
@@ -424,7 +424,7 @@ function startCountdown(endTimeStr) {
 
       let enrolledData = null;
       try {
-        const response = await fetch(`/api/face/descriptors/${student.id}`);
+        const response = await fetch(`https://face-attendance-production-a7ed.up.railway.app/api/face/descriptors/${student.id}`);
         const data = await response.json();
         if(data.success && data.descriptors) {
             enrolledData = data.descriptors;
@@ -526,7 +526,7 @@ function startCountdown(endTimeStr) {
       }
 
       try {
-        const response = await fetch('/api/attendance/mark', {
+        const response = await fetch('https://face-attendance-production-a7ed.up.railway.app/api/attendance/mark', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

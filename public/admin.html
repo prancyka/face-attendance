@@ -276,7 +276,7 @@
       selectedDayOrder = day;
       
       try {
-          await fetch('/api/settings/dayOrder', {
+          await fetch('https://face-attendance-production-a7ed.up.railway.app/api/settings/dayOrder', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ dayOrder: day })
@@ -308,7 +308,7 @@
       };
       
       try {
-        const response = await fetch(`/api/schedule/${year}/${selectedDayOrder}`, {
+        const response = await fetch(`https://face-attendance-production-a7ed.up.railway.app/api/schedule/${year}/${selectedDayOrder}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(schedule)
@@ -327,7 +327,7 @@
     const loadSchedule = async () => {
       const year = document.getElementById('year-selector').value;
       try {
-          const response = await fetch(`/api/schedule/${year}/${selectedDayOrder}`);
+          const response = await fetch(`https://face-attendance-production-a7ed.up.railway.app/api/schedule/${year}/${selectedDayOrder}`);
           const data = await response.json();
           const p = (v) => ({ subject: '', start: '00:00', end: '00:00' });
           const saved = data.schedule || { p1:p(1), p2:p(2), p3:p(3), p4:p(4), p5:p(5) };
@@ -386,7 +386,7 @@
 
     const updateAttendanceStats = async () => {
       try {
-          const response = await fetch(`/api/attendance/stats?t=${Date.now()}`);
+          const response = await fetch(`https://face-attendance-production-a7ed.up.railway.app/api/attendance/stats?t=${Date.now()}`);
           const data = await response.json();
           if(data.success) {
               document.getElementById('stat-present').innerText = data.stats.present;
@@ -420,7 +420,7 @@
               const years = ['first_year', 'second_year', 'third_year'];
               await Promise.all(years.map(async (y) => {
                   try {
-                      const res = await fetch(`/api/attendance/records/${y}?t=${Date.now()}`);
+                      const res = await fetch(`https://face-attendance-production-a7ed.up.railway.app/api/attendance/records/${y}?t=${Date.now()}`);
                       const d = await res.json();
                       if(d.success) {
                           d.present.forEach(r => { r.year = r.year || y; mergedData.present.push(r); });
@@ -430,7 +430,7 @@
                   } catch(e) {}
               }));
           } else {
-              const response = await fetch(`/api/attendance/records/${year}?t=${Date.now()}`);
+              const response = await fetch(`https://face-attendance-production-a7ed.up.railway.app/api/attendance/records/${year}?t=${Date.now()}`);
               const d = await response.json();
               if(d.success) {
                   d.present.forEach(r => { r.year = r.year || year; mergedData.present.push(r); });
@@ -480,7 +480,7 @@
       document.getElementById('current-date-display').innerText = new Date().toLocaleDateString('en-US', options);
       
       try {
-          const res = await fetch('/api/settings/dayOrder');
+          const res = await fetch('https://face-attendance-production-a7ed.up.railway.app/api/settings/dayOrder');
           const data = await res.json();
           if(data.success) { selectedDayOrder = data.dayOrder || 1; }
       } catch(err) {}
